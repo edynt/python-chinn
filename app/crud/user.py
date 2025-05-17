@@ -1,16 +1,12 @@
 # app/crud/user.py
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.user import User
 from app.schemas.user import UserCreate
 
 
-def create_user(db: Session, user: UserCreate):
+async def create_user(db: AsyncSession, user: UserCreate):
     db_user = User(**user.model_dump())
     db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
+    await db.commit()
+    await db.refresh(db_user)
     return db_user
-
-
-def get_users(db: Session):
-    return db.query(User).all()
